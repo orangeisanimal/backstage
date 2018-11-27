@@ -8,7 +8,7 @@
       <el-form-item label="密码">
         <el-input v-model="formdata.password"></el-input>
       </el-form-item>
-        <el-button type="success" plain class="login-btn">登陆</el-button>
+        <el-button type="success" plain class="login-btn" @click="UserList()">登陆</el-button>
     </el-form>
   </div>
 </template>
@@ -22,7 +22,24 @@ export default {
               password:'',
           }
       }
-  }
+  },
+   methods:{
+       //优化代码， 对性能不产生影响，只是美观,ES7语法
+      async UserList(){
+         const res = await this.$http.post('login',this.formdata)
+          
+           const {meta:{status,msg},data}=res.data
+           if(status===200){
+               //保存token
+               const token =localStorage.setItem('token',data.token)
+               this.$router.push({name:'home'})
+               this.$message.success(msg);
+           }else{
+               this.$message.warning(msg)
+           }
+           
+       }
+   }
 }
 </script>
 
